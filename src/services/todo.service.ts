@@ -6,19 +6,23 @@ const create = async (todo: Todo) => {
 }
 
 const find = async () => {
-  return await TodoModel.find()
+  return await TodoModel.find({}).exec()
 }
 
 const findById = async (id: string) => {
-  return await TodoModel.findById({_id: id})
+  return await TodoModel.findById(id).exec()
 }
 
 const updateById = async (id: string, data: Todo) => {
-  return await TodoModel.updateOne({_id: id}, data)
+  return await TodoModel.findByIdAndUpdate(id, data)
+}
+
+const deleteAllCompleted = async () => {
+  return await TodoModel.deleteMany({ completed: true })
 }
 
 const deleteById = async (id: string) => {
-  return await TodoModel.deleteOne({_id: id})
+  return await TodoModel.findByIdAndDelete(id)
 }
 
 export default {
@@ -26,5 +30,6 @@ export default {
   find,
   findById,
   updateById,
-  deleteById
+  deleteById,
+  deleteAllCompleted
 }
