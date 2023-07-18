@@ -3,11 +3,11 @@ import { resError, resSuccessful } from '../controllers/response'
 import todoService from '../services/todo.service'
 
 const post = async (req: Request, res: Response) => {
-  todoService.create(req.body)
+  const data = req.body
+
+  todoService.create(data)
     .then(() => res.status(200).json(resSuccessful))
-    .catch(() => {
-      return res.status(500).json(resError)
-    })
+    .catch(() => res.status(500).json(resError))
 }
 
 const get = (res: Response) => {
@@ -33,6 +33,12 @@ const updateById = async (req: Request, res: Response) => {
     .catch(() => res.status(500).json(resError))
 }
 
+const deleteAllCompleted = (res: Response) => {
+  todoService.deleteAllCompleted()
+    .then(() => res.status(200).json(resSuccessful))
+    .catch(() => res.status(500).json(resError))
+}
+
 const deleteById = async (req: Request, res: Response) => {
   const { id } = req.params
 
@@ -46,5 +52,6 @@ export default {
   get,
   getById,
   updateById,
-  deleteById
+  deleteById,
+  deleteAllCompleted
 }
