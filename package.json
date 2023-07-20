@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev src/App.ts"
+    "dev": "ts-node-dev src/App.ts",
+    "build": "tsc",
+    "start": "node ./dist/App.js"
   },
   "author": "",
   "license": "ISC",
