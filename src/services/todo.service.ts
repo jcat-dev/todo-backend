@@ -6,7 +6,7 @@ const create = async (todo: Todo) => {
 }
 
 const find = async () => {
-  return await TodoModel.find({}).exec()
+  return await TodoModel.find({}).sort({ order: 1 }).exec()
 }
 
 const findById = async (id: string) => {
@@ -22,7 +22,17 @@ const deleteAllCompleted = async () => {
 }
 
 const deleteById = async (id: string) => {
-  return await TodoModel.findByIdAndDelete(id)
+  const todoList = await find()
+  const todoIndex = todoList.findIndex((value) => value.id === id)
+
+  todoList.forEach(async (value, index) => {
+    if (index > todoIndex) {
+      value.order--
+      await value.save()
+    }
+  })
+
+  await TodoModel.findByIdAndDelete(id)
 }
 
 export default {
