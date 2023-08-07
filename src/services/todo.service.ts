@@ -6,7 +6,7 @@ const create = async (todo: Todo) => {
 }
 
 const find = async () => {
-  return await TodoModel.find({}).sort({ order: 1 }).exec()
+  return await TodoModel.find({}).sort({ completed: -1, order: 1}).exec()
 }
 
 const findById = async (id: string) => {
