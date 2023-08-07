@@ -47,11 +47,23 @@ const deleteById = async (req: Request, res: Response) => {
     .catch(() => res.status(500).json(resError))
 }
 
+const sort = async (req: Request, res: Response) => {
+  const {
+    currentIndex,
+    targetIndex
+  } = req.body
+
+  todoService.sort(currentIndex, targetIndex)
+    .then(() => res.status(200).json(resSuccessful))
+    .catch(() => res.status(500).json(resError))
+}
+
 export default {
   post,
   get,
   getById,
   updateById,
   deleteById,
-  deleteAllCompleted
+  deleteAllCompleted,
+  sort
 }

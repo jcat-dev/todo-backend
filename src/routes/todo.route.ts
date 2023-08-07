@@ -7,6 +7,7 @@ router.post('/', (req, res) => todoController.post(req, res))
 router.get('/', (_req, res) => todoController.get(res))
 router.get('/:id', (req, res) => todoController.getById(req, res))
 
+router.put('/sort', (req, res) => todoController.sort(req, res))
 router.put('/:id', (req, res) => todoController.updateById(req, res))
 
 router.delete('/', (_req, res) => todoController.deleteAllCompleted(res))
