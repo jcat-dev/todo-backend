@@ -10,6 +10,10 @@ const todoSchema = new Schema<Todo>({
   completed: {
     type: Boolean,
     required: true
+  },
+  order: {
+    type: Number,
+    required: true
   }
 })
 
