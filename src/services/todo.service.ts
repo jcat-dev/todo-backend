@@ -37,40 +37,38 @@ const deleteById = async (id: string) => {
 
 const sort = async (currentIndex: number, targetIndex: number) => {
   const docList = await find()
+  const completedTodo = docList.filter((value) => value.completed).length
 
-  if (currentIndex === targetIndex) return
+  if (currentIndex === targetIndex || currentIndex < completedTodo || targetIndex < completedTodo) return
 
-  if (currentIndex > targetIndex) {
-    docList.forEach(async (value) => {
-      if (targetIndex <= value.order && currentIndex >= value.order) {
-        if (currentIndex === value.order) {
-          value.order = targetIndex
-          await value.save()
+  const item = docList[currentIndex]
+  await TodoModel.findByIdAndUpdate(item._id, { order: targetIndex })
 
-          return
-        }
-
-        value.order++
-        await value.save()
-      }  
-    })
-
+  if (currentIndex < targetIndex) {
+    await changeOrder(currentIndex, targetIndex, item.id, -1)
     return
   }
 
-  docList.forEach(async (value) => {
-    if (currentIndex <= value.order && targetIndex >= value.order) {
-      if (currentIndex === value.order) {
-        value.order = targetIndex
-        await value.save()
+  await changeOrder(targetIndex, currentIndex, item.id, 1)
+}
 
-        return
+const changeOrder = async (start: number, end: number, neId: string, inc: number) => {
+  await TodoModel.updateMany(
+    {
+      order: {
+        $gte: start, 
+        $lte: end
+      },
+      _id: {
+        $ne: neId
       }
-
-      value.order--
-      await value.save()
+    },
+    {
+      $inc: { 
+        order: inc
+      }
     }
-  })
+  )
 }
 
 export default {
