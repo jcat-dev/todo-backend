@@ -14,7 +14,20 @@ const findById = async (id: string) => {
 }
 
 const updateById = async (id: string, data: Todo) => {
-  return await TodoModel.findByIdAndUpdate(id, data)
+  const docList = await find()
+  const elementsLength = docList.filter((value) => value.completed).length
+  const result = await TodoModel.findByIdAndUpdate(id, {
+    ...data, 
+    order: data.completed ? elementsLength : (elementsLength - 1)
+  })
+
+  if (result && data.completed) {
+    return await changeOrder(elementsLength, data.order, id, 1)
+  }
+
+  if (result) {
+    await changeOrder(data.order, elementsLength - 1, id, -1)
+  }
 }
 
 const deleteAllCompleted = async () => {
