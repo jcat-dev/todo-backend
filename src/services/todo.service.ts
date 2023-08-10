@@ -31,7 +31,12 @@ const updateById = async (id: string, data: Todo) => {
 }
 
 const deleteAllCompleted = async () => {
-  return await TodoModel.deleteMany({ completed: true })
+  const result = await find()
+  const { deletedCount } = await TodoModel.deleteMany({ completed: true })
+
+  if (deletedCount > 0) {    
+    await changeOrder(deletedCount, result.length - 1, (deletedCount * -1))
+  }
 }
 
 const deleteById = async (id: string) => {
