@@ -22,11 +22,11 @@ const updateById = async (id: string, data: Todo) => {
   })
 
   if (result && data.completed) {
-    return await changeOrder(elementsLength, data.order, id, 1)
+    return await changeOrder(elementsLength, data.order, 1, id)
   }
 
   if (result) {
-    await changeOrder(data.order, elementsLength - 1, id, -1)
+    await changeOrder(data.order, elementsLength - 1, -1, id)
   }
 }
 
@@ -58,30 +58,42 @@ const sort = async (currentIndex: number, targetIndex: number) => {
   await TodoModel.findByIdAndUpdate(item._id, { order: targetIndex })
 
   if (currentIndex < targetIndex) {
-    await changeOrder(currentIndex, targetIndex, item.id, -1)
+    await changeOrder(currentIndex, targetIndex, -1, item.id)
     return
   }
 
-  await changeOrder(targetIndex, currentIndex, item.id, 1)
+  await changeOrder(targetIndex, currentIndex, 1, item.id)
 }
 
-const changeOrder = async (start: number, end: number, neId: string, inc: number) => {
-  await TodoModel.updateMany(
-    {
-      order: {
-        $gte: start, 
-        $lte: end
-      },
-      _id: {
-        $ne: neId
-      }
-    },
-    {
-      $inc: { 
-        order: inc
-      }
+const changeOrder = async (start: number, end: number, inc: number, neId?: string) => {
+  const filter = {
+    order: {
+      $gte: start, 
+      $lte: end
     }
-  )
+  }
+
+  const update = {
+    $inc: { 
+      order: inc
+    }
+  }
+
+  if (neId) {
+    await TodoModel.updateMany(
+      {
+        ...filter,
+        _id: {
+          $ne: neId
+        }
+      },
+      update
+    )
+
+    return
+  }
+
+  await TodoModel.updateMany(filter, update)
 }
 
 export default {
