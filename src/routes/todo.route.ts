@@ -1,16 +1,12 @@
 import express from 'express'
-import todoController from '../controllers/todo.controller'
+import { createTodo, deleteAllCompletedTodo, deleteTodoById, getTodos, sortTodos, toggleCompletedTodoById } from '../controllers/todo.controller'
 const router = express.Router()
 
-router.post('/', (req, res) => todoController.post(req, res))
-
-router.get('/', (_req, res) => todoController.get(res))
-router.get('/:id', (req, res) => todoController.getById(req, res))
-
-router.put('/sort', (req, res) => todoController.sort(req, res))
-router.put('/:id', (req, res) => todoController.updateById(req, res))
-
-router.delete('/', (_req, res) => todoController.deleteAllCompleted(res))
-router.delete('/:id', (req, res) => todoController.deleteById(req, res))
+router.post('/', (req, res) => createTodo(req, res))
+router.get('/', (_req, res) => getTodos(res))
+router.put('/sort', (req, res) => sortTodos(req, res))
+router.put('/:id', (req, res) => toggleCompletedTodoById(req, res))
+router.delete('/', (_req, res) => deleteAllCompletedTodo(res))
+router.delete('/:id', (req, res) => deleteTodoById(req, res))
 
 export default router
