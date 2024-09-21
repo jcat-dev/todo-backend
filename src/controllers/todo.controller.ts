@@ -84,14 +84,25 @@ export const deleteTodoById = async (req: Request, res: Response) => {
   }
 }
 
-export const sortTodos = async (req: Request, res: Response) => {
+export const sortTodosById = async (req: Request, res: Response) => {
   try {
-    const { currentIndex, targetIndex } = req.body
+    const {
+      currentIndex, 
+      targetIndex
+    } = req.body
+
+    const { id } = req.params
     const todoList = await findTodos()
     const completedTodoLength = todoList.filter((value) => value.completed).length
-    if (currentIndex === targetIndex || currentIndex < completedTodoLength || targetIndex < completedTodoLength) return
-  
-    const todo = todoList[currentIndex]
+    const todo = todoList.find((value) => value.id === id)
+
+    if (
+      currentIndex === targetIndex || 
+      currentIndex < completedTodoLength || 
+      targetIndex < completedTodoLength ||
+      !todo
+    ) return
+
     await TodoModel.findByIdAndUpdate(todo._id, {order: targetIndex})
     currentIndex < targetIndex
       ? await sortOrder(currentIndex, targetIndex, -1, todo.id)
